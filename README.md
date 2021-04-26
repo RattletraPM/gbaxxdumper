@@ -46,15 +46,22 @@ In order to use this tool you will need:
 **There is a known bug which sometimes shows a blank prompt on the bottom screen. If this happens, just press return on the onscreen keyboard**
 
 **FTP Server IP:** Self-explanatory, ftpii should show it on screen when you launch it
+
 **FTP Server port:** Defaults to 21 (ftpii: no need to change it by default, press return / DSFTP: the port currently in use should be shown on screen)
+
 **FTP Username:** Defaults to anonymous (ftpii: no need to change it by default, press return / DSFTP: choose the user from your config file)
+
 **FTP Password:** Defaults to guest (ftpii: no need to change it by default, press return / DSFTP: choose the user from your config file)
+
 **CWD to:**  If your FTP server does not have a writable root directory, you can use this to CWD to a directory that you can write to with the given user (ftpii: write "sd", no quotes, and press return / DSFTP: if you set the root dir to be writable then no need to CWD, press return, otherwise check your configuration file)
 
 3) ROM dumping should start, you can check the progress on the bottom screen of your DS/DS Lite. Once done, a message saying "All done!" should pop up on the top screen.
 
 # Credits
 gbaxxdumper was made by vappster
+
 ftplib was originally ported to the Nintendo DS by AdmiralCurtiss, some fixes added by vappster
+
 Some code has been adapted from gba-link-cable-dumper by FIX94 (specifically line 35 @ gbhaxxdumper's main.c) and Robz8 (help with testing & bugfixing)
+
 And last but not least, thanks to joedj for ftpii, Bjoern Giesler for DSFTP, shutterbug2000 for haxxstation, Gericom for dspatch, RetroHeim-Soft for dspatch-gui, Treeki for Nitro Explorer and (further) thanks to FIX94 for gba-link-cable-dumper!
