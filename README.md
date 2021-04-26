@@ -44,6 +44,7 @@ In order to use this tool you will need:
 ## Step 2: Dumping the GBA game over Wi-Fi
 1) (If using ftpii/DSFTP) Quit wii-ds-rom-sender (Wii/Wii U) or TWiLightMenu (DSi/3DS) and open ftpii/DSFTP before proceeding further
 2) Your DS/DS Lite should show you a number of prompt asking for the FTP server IP address, auth info, etc on the bottom screen:
+3) 
 **There is a known bug which sometimes shows a blank prompt on the bottom screen. If this happens, just press return on the onscreen keyboard**
 
 **FTP Server IP:** Self-explanatory, ftpii should show it on screen when you launch it
