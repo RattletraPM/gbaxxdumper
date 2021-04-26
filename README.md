@@ -1,2 +1,2 @@
 # gbaxxdumper
-DS Download Play (flashme/haxxstation-compatible) GBA cart dumper
+DS Download Play-compatible (flashme/haxxstation) GBA cart dumper over Wi-Fi
