@@ -3,7 +3,9 @@ DS Download Play-compatible (flashme/haxxstation) GBA cart dumper over Wi-Fi, ma
 
 Crappy stream showing the dumper in action can be found here: https://www.twitch.tv/videos/1001495693 (jump to 1:23:39 for a succesful dump, will edit the stream into a better video soon™)
 
+
 In order to use this tool you will need:
+
 - One of the following consoles: Wii/Wii U/DSi/3DS (console must be softmodded. please note - Wii U is currently untested, but technically compatible)
 - Nintendo DS or DS Lite (optional - running flashme)
 - A way to configure Wi-Fi on your DS/DS Lite (Wi-Fi enabled DS game or homebrew)
@@ -26,7 +28,11 @@ In order to use this tool you will need:
 ### DSi/3DS
 1) Download and install [TWiLightMenu](https://github.com/DS-Homebrew/TWiLightMenu)
 2) Choose one of the following:
+
+
 **haxxstation**: Either use [dspatch-gui](https://github.com/RetroHeim-Soft/dspatch-gui) or [dspatch](https://github.com/Gericom/dspatch) to inject gbaxxdumper into the DS Download Station - Volume 1 US ROM, then copy the patched ROM to your DSi/3DS SD card
+
+
 **flashme**: Either use the instructions above or, as a more legally accessible way, dump a ROM of a DS Download Play-compatible game and use NitroExplorer or a similar software to inject gbaxxdumper into it (search for .srl files in the DS ROM, usually called main.srl, and reinsert gbaxxdumper over it), then copy the patched ROM to your DSi/3DS SD card
 3) Either download [DSFTP](https://www.gamebrew.org/wiki/DSFTP) and copy it to your SD card then set up its configuration file or set up the FTP server of your choice
 4) Configure and connect the DS/DS Lite to your Wi-Fi access point (and your DSi/3DS in DS mode if running DSFTP)
