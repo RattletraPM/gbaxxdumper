@@ -1,5 +1,6 @@
 # gbaxxdumper
 DS Download Play-compatible (flashme/haxxstation) GBA cart dumper over Wi-Fi, made by vappster. Uses softmods only, no flashcart/dongle/GC<->GBA link cable required.
+
 Crappy stream showing the dumper in action can be found here: https://www.twitch.tv/videos/1001495693 (jump to 1:23:39 for a succesful dump, will edit the stream into a better video soon™)
 
 In order to use this tool you will need:
