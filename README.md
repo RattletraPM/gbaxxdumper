@@ -34,6 +34,7 @@ In order to use this tool you will need:
 
 
 **flashme**: Either use the instructions above or, as a more legally accessible way, dump a ROM of a DS Download Play-compatible game and use NitroExplorer or a similar software to inject gbaxxdumper into it (search for .srl files in the DS ROM, usually called main.srl, and reinsert gbaxxdumper over it), then copy the patched ROM to your DSi/3DS SD card
+
 3) Either download [DSFTP](https://www.gamebrew.org/wiki/DSFTP) and copy it to your SD card then set up its configuration file or set up the FTP server of your choice
 4) Configure and connect the DS/DS Lite to your Wi-Fi access point (and your DSi/3DS in DS mode if running DSFTP)
 5) Boot up your DSi/3DS, open TWiLightMenu and run the patched download station/DS game ROM that you made in step 2
