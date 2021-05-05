@@ -66,4 +66,4 @@ ftplib was originally ported to the Nintendo DS by AdmiralCurtiss, some fixes ad
 
 Some code has been adapted from gba-link-cable-dumper by FIX94 (specifically line 35 @ gbhaxxdumper's main.c) and Robz8 (help with testing & bugfixing)
 
-And last but not least, thanks to joedj for ftpii, Bjoern Giesler for DSFTP, shutterbug2000 for haxxstation, Gericom for dspatch, RetroHeim-Soft for dspatch-gui, Treeki for Nitro Explorer and (further) thanks to FIX94 for gba-link-cable-dumper!
+And last but not least, thanks to joedj for ftpii, Bjoern Giesler for DSFTP, shutterbug2000 for haxxstation, Gericom for dspatch, bennyman123abc for dspatch-gui, Treeki for Nitro Explorer and (further) thanks to FIX94 for gba-link-cable-dumper!
