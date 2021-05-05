@@ -99,7 +99,7 @@ int main(void) {
 	sysSetCartOwner(true);
 
 	consoleSelect(&top);
-	printf("gbaxxdumper v0.65 by vappster\n\n");
+	printf("gbaxxdumper v0.66 by vappster\n\n");
 
 	romsize = getGameSize();
 	if (isDSiMode()){
@@ -116,7 +116,7 @@ int main(void) {
 				while (invalidIp) {
 					ftp_ip[0] = 0;
 					kbdPrompt("Enter FTP server IP: \n", "", ftp_ip, 15);
-					invalidIp = (strcmp(ftp_ip, "") == 0 || strncmp(ftp_ip, " ", 1) == 0 || strlen(ftp_ip) < 11);
+					invalidIp = (strcmp(ftp_ip, "") == 0 || strncmp(ftp_ip, " ", 1) == 0 || strlen(ftp_ip) < 7 || strlen(ftp_ip) > 15);
 					iprintf("%s\n\n", invalidIp ? "Invalid!" : ftp_ip);
 				}
 
