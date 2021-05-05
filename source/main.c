@@ -117,6 +117,11 @@ int main(void) {
 					ftp_ip[0] = 0;
 					kbdPrompt("Enter FTP server IP: \n", "", ftp_ip, 15);
 					invalidIp = (strcmp(ftp_ip, "") == 0 || strncmp(ftp_ip, " ", 1) == 0 || strlen(ftp_ip) < 7 || strlen(ftp_ip) > 15);
+					for (int i = 0; i < strlen(ftp_ip); i++)
+					{
+						if ((ftp_ip[i] < '0' || ftp_ip[i] > '9') && ftp_ip[i] != '.')
+							invalidIp = true;
+					}
 					iprintf("%s\n\n", invalidIp ? "Invalid!" : ftp_ip);
 				}
 
