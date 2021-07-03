@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "ftplib.h"
+#include "libSave.h"
 
 static netbuf *buf = NULL;
 netbuf *ndata;
@@ -21,9 +22,11 @@ char ftpdir[256];
 
 char fname[256];
 
-int wrote, romsize;
+int wrote, romsize, savesize;
 
 PrintConsole top, bot;
+
+u8 save_data[0x20000];
 
 int getGameSize(void)
 {
@@ -84,6 +87,67 @@ void kbdPrompt(char* promptTop, char* defVal, char* str, int maxlen) {
 	keypresses = 0;
 }
 
+void dumpRom(void) {
+	romsize = getGameSize();
+	wrote = 0;
+
+	sprintf(fname, "%.18s.gba", (char*)GBAROM+0xa0);
+	FtpAccess(fname, FTPLIB_FILE_WRITE, FTPLIB_IMAGE, buf, &ndata);
+	printf("Dumping %s\n",fname);
+	printf("ROM size: 0x%x\n\n", romsize);
+	consoleSelect(&bot);
+	do {
+		wrote += FtpWrite((u8*)GBAROM + wrote, romsize-wrote, ndata);
+		printf("Progress: 0x%x\n", wrote);
+	} while (romsize-wrote > 0);
+	swiDelay(10000);
+	FtpClose(ndata);
+	consoleSelect(&top);
+	printf("All done!\n");
+}
+
+void dumpSave(void) {
+	romsize = getGameSize();
+	savesize = SaveSize(save_data, romsize);
+	wrote = 0;
+
+	switch (savesize){
+		case 0x200:
+			printf("Attempting to read EEPROM (512B). This might not work");
+			GetSave_EEPROM_512B(save_data);
+			break;
+		case 0x2000:
+			printf("Attempting to read EEPROM (8KB). This might not work");
+			GetSave_EEPROM_8KB(save_data);
+			break;
+		case 0x8000:
+			GetSave_SRAM_32KB(save_data);
+			break;
+		case 0x10000:
+			GetSave_FLASH_64KB(save_data);
+			break;
+		case 0x20000:
+			GetSave_FLASH_128KB(save_data);
+			break;
+		default:
+			break;
+	}
+
+	sprintf(fname, "%.18s.sav", (char*)GBAROM+0xa0);
+	FtpAccess(fname, FTPLIB_FILE_WRITE, FTPLIB_IMAGE, buf, &ndata);
+	printf("Dumping %s\n",fname);
+	printf("SAV size: 0x%x\n\n", savesize);
+	consoleSelect(&bot);
+	do {
+		wrote += FtpWrite(save_data + wrote, savesize-wrote, ndata);
+		printf("Progress: 0x%x\n", wrote);
+	} while (savesize-wrote > 0);
+	swiDelay(10000);
+	FtpClose(ndata);
+	consoleSelect(&top);
+	printf("All done!\n");
+}
+
 int main(void) {
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
@@ -101,73 +165,70 @@ int main(void) {
 	consoleSelect(&top);
 	printf("gbaxxdumper v0.66 by vappster\n\n");
 
-	romsize = getGameSize();
 	if (isDSiMode()){
 		printf("This homebrew can only be run\non a Nintendo DS or DS Lite!\n\n");
 	} else {
-		if (romsize == 0){
-			printf("GBA cartridge not found!\n\nDouble check that the cart is\nrecognized correctly by your DS\nand try again.");
+		printf("Connecting to Wi-Fi AP\n");
+		if (!Wifi_InitDefault(WFC_CONNECT)) {
+			printf("Wi-Fi AP connection failed!\n\nMake sure your Wi-Fi settings\nare correct and try again.");
 		} else {
-			printf("Connecting to Wi-Fi AP\n");
-			if (!Wifi_InitDefault(WFC_CONNECT)) {
-				printf("Wi-Fi AP connection failed!\n\nMake sure your Wi-Fi settings\nare correct and try again.");
-			} else {
-				keyboardShow();
-				while (invalidIp) {
-					ftp_ip[0] = 0;
-					kbdPrompt("Enter FTP server IP: \n", "", ftp_ip, 15);
-					invalidIp = (strcmp(ftp_ip, "") == 0 || strncmp(ftp_ip, " ", 1) == 0 || strlen(ftp_ip) < 7 || strlen(ftp_ip) > 15);
-					for (int i = 0; i < strlen(ftp_ip); i++)
-					{
-						if ((ftp_ip[i] < '0' || ftp_ip[i] > '9') && ftp_ip[i] != '.')
-							invalidIp = true;
-					}
-					iprintf("%s\n\n", invalidIp ? "Invalid!" : ftp_ip);
+			keyboardShow();
+			while (invalidIp) {
+				ftp_ip[0] = 0;
+				kbdPrompt("Enter FTP server IP: \n", "", ftp_ip, 15);
+				invalidIp = (strcmp(ftp_ip, "") == 0 || strncmp(ftp_ip, " ", 1) == 0 || strlen(ftp_ip) < 7 || strlen(ftp_ip) > 15);
+				for (int i = 0; i < strlen(ftp_ip); i++)
+				{
+					if ((ftp_ip[i] < '0' || ftp_ip[i] > '9') && ftp_ip[i] != '.')
+						invalidIp = true;
 				}
-
-				kbdPrompt("Enter FTP server port: ", "21", ftp_port, 5);
-				iprintf("%s\n\n", ftp_port);
-				
-				kbdPrompt("Enter FTP username: ", "anonymous", ftp_user, 32);
-				iprintf("%s\n\n", ftp_user);
-				
-				kbdPrompt("Enter FTP password: ", "guest", ftp_pass, 32);
-				iprintf("%s\n\n", ftp_pass);
-				
-				kbdPrompt("CWD to:", ".", ftpdir, 256);
-				iprintf("%s\n\n", ftpdir);
-				keyboardHide();
-
-				sprintf(ftpstr, "%s:%s", ftp_ip, ftp_port);
-				printf("Connecting to ");
-				printf("%s\n",ftpstr);
-				while (!FtpConnect(ftpstr, &buf)) {
-					swiDelay(10000);
-				}
-				printf("Logging in\n");
-				while (!FtpLogin(ftp_user, ftp_pass, buf)) {
-					swiDelay(10000);
-				}
-				if (ftpdir[0] != '.'){
-					printf("Changing working directory\n");
-					FtpChdir(ftpdir, buf);
-				}
-				sprintf(fname, "%.18s.gba", (char*)GBAROM+0xa0);
-				FtpAccess(fname, FTPLIB_FILE_WRITE, FTPLIB_IMAGE, buf, &ndata);
-				printf("Dumping %s\n",fname);
-				printf("ROM size: 0x%x\n\n", romsize);
-				consoleSelect(&bot);
-				do {
-					wrote += FtpWrite((u8*)GBAROM + wrote, romsize-wrote, ndata);
-					printf("Progress: 0x%x\n", wrote);
-				} while (romsize-wrote > 0);
-				swiDelay(10000);
-				FtpClose(ndata);
-				FtpQuit(buf);
-				Wifi_DisconnectAP();
-				consoleSelect(&top);
-				printf("All done!\n");
+				iprintf("%s\n\n", invalidIp ? "Invalid!" : ftp_ip);
 			}
+
+			kbdPrompt("Enter FTP server port: ", "21", ftp_port, 5);
+			iprintf("%s\n\n", ftp_port);
+			
+			kbdPrompt("Enter FTP username: ", "anonymous", ftp_user, 32);
+			iprintf("%s\n\n", ftp_user);
+			
+			kbdPrompt("Enter FTP password: ", "guest", ftp_pass, 32);
+			iprintf("%s\n\n", ftp_pass);
+			
+			kbdPrompt("CWD to:", ".", ftpdir, 256);
+			iprintf("%s\n\n", ftpdir);
+			keyboardHide();
+
+			sprintf(ftpstr, "%s:%s", ftp_ip, ftp_port);
+			printf("Connecting to ");
+			printf("%s\n",ftpstr);
+			while (!FtpConnect(ftpstr, &buf)) {
+				swiDelay(10000);
+			}
+			printf("Logging in\n");
+			while (!FtpLogin(ftp_user, ftp_pass, buf)) {
+				swiDelay(10000);
+			}
+			if (ftpdir[0] != '.'){
+				printf("Changing working directory\n");
+				FtpChdir(ftpdir, buf);
+			}
+			
+			printf("Insert or switch cartridges\n");
+			printf("Then press (A) to backup save file or (B) to backup ROM\n\n");
+				
+			while (1) { 
+				swiWaitForVBlank();
+				scanKeys();
+				if (keysDown() & KEY_A) {
+					dumpSave();
+				} else if (keysDown() & KEY_B) {
+					dumpRom();
+				} else if (keysDown() & KEY_START) break;
+			}
+
+			printf("Done backing up! Exit by pressing START");
+			FtpQuit(buf);
+			Wifi_DisconnectAP();
 		}
 	}
 
